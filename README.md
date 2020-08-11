@@ -93,9 +93,9 @@ URI是以一种抽象的，高层次概念定义统一资源标识，而URL和UR
 
 
 
-<img src="https://upload-images.jianshu.io/upload_images/2964446-fdfb1a8fce8de946.png?imageMogr2/auto-orient/strip%7CimageView2/2"/>
+<img src="README.assets/2964446-fdfb1a8fce8de946.png"/>
 
-![img](https://upload-images.jianshu.io/upload_images/2964446-fdfb1a8fce8de946.png?imageMogr2/auto-orient/strip%7CimageView2/2)
+
 
 Http请求消息结构.png
 
@@ -155,7 +155,7 @@ name=Professional%20Ajax&publisher=Wiley
 
  
 
-![img](https://upload-images.jianshu.io/upload_images/2964446-1c4cab46f270d8ee.jpg?imageMogr2/auto-orient/strip%7CimageView2/2)
+![img](README.assets/2964446-1c4cab46f270d8ee.jpg)
 
 http响应消息格式.jpg
 
