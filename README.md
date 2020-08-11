@@ -93,7 +93,7 @@ URI是以一种抽象的，高层次概念定义统一资源标识，而URL和UR
 
 
 
-
+<img src="https://upload-images.jianshu.io/upload_images/2964446-fdfb1a8fce8de946.png?imageMogr2/auto-orient/strip%7CimageView2/2"/>
 
 ![img](https://upload-images.jianshu.io/upload_images/2964446-fdfb1a8fce8de946.png?imageMogr2/auto-orient/strip%7CimageView2/2)
 
