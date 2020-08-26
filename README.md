@@ -261,7 +261,7 @@ src下的java代码会编译到工作空间的web文件夹下的WEB-INF下的cla
 %>
 ```
 
-## 指令
+## 1、指令
 
 ```jsp
 <$@ 指令名称 key="value" key="value"%>
@@ -897,7 +897,7 @@ resp.sendRedirect("/dem1/responseDemo2");
 
 ## Cookie
 
-#### 创建
+### 创建
 
 ```java
 Cookie c1=new Cookie("msg","hello");
@@ -908,7 +908,7 @@ resp.addCookie(c1);
 resp.addCookie(c2);
 ```
 
-#### 输出
+### 输出
 
 ```java
 Cookie[] cs = req.getCookies();
@@ -919,7 +919,7 @@ if(cs!=null){
 }
 ```
 
-#### 清空
+### 清空
 
 ```java
 Cookie[] cs=req.getCookies();
@@ -932,9 +932,9 @@ if (cs!=null){
 }
 ```
 
-### Session
+## Session
 
-#### 创建与赋值
+### 创建与赋值
 
 ```java
 HttpSession session = req.getSession();
@@ -944,12 +944,635 @@ session.setAttribute("key",user);
 
 ```
 
-#### 获取
+### 获取
 
 ```java
 HttpSession session = request.getSession();
 if(session.getAttribute("key")!=null){
     User usr=(User)session.getAttribute("key");
 }
+```
+
+### 销毁
+
+```java
+HttpSession session = req.getSession();
+session.invalidate();
+```
+
+# EL表达式
+1. 运算：
+  * 运算符：
+    1. 算术运算符：+ - * /(div) %(mod)
+
+    2. 比较运算符：> < >= <= == !=
+
+    3. 逻辑运算符：&&(and) ||(or) !(not)
+
+    4. 空运算符：empty
+      * 功能：用于判断字符串、集合、数组对象是否为null或长度是否为0
+      * ${empty list} 
+
+      
+
+      * 功能：用于判断字符串、集合、数组对象是否不为null切长度是否大于0
+
+      * ${not empty str}
+2. 获取值
+    1. el表达式只能从域对象中获取值
+
+    2. 语法：
+
+       1. ${域名城.键名} ： 从指定域中获取指定键的值
+
+          * 域名称：
+            1. pageScope		   -->pageContext
+            2. requestScope      -->request
+            3. sessionScope       -->session
+            4. applicationScope-->application(ServletContext)
+          * 举例：在request域中存储了name=张三
+          * 获取：${requestScope.name}
+
+       2. ${键名}：表示依次从最小的域中查找是否有该键对应的值，直到找到为止
+
+          *通过的是对象的属性来获取
+          *setter或getter方法，去掉set或get，在将剩余部分，首字母变为小写。
+          *setName--> Name -- > name
+          所以可以人为给对象加点getter方法
+
+          有时候${obj.key-1}不好使
+
+          那就用${obj["key-1"]}
+
+       3. 获取对象、List集合、Map集合的值
+
+          1. 对象：${域名称.键名.属性名}
+
+             * 本质上会去调用对象的getter方法
+
+          2. List集合：${域名称.键名[索引]}
+
+             * 不用[]直接${域名称.键名}就会当做数组输出
+
+          3. Map集合：
+       
+             * ${域名称.键名.key名称}
+       
+             * ${域名称.键名[“key名称”]}
+
+
+3. 隐式对象：
+	* el表达式中有11个隐式对象
+	* pageContext：
+	  * 获取jsp其他八个内置对象
+	    * ${pageContext.request.contextPath}动态获取虚拟目录
+
+
+
+# JSTL
+
+1. 概念：JavaServer Pages Tag Library	JSP标准标签库
+
+   * 是由Apache组织提供的开源的免费的jsp标签
+
+2. 作用：用于简化和替换jsp页面上的java代码
+
+3. 使用步骤：
+
+   1. 导入jstl相关jar包
+2. 引入标签库：taglib指令：<%@ taglib%>
+   
+   * <@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+3. 使用标签
+   
+4. 常用的JSTL标签
+
+   1. if				：相当于java代码的if语句
+
+   2. choose      ：相当于java代码的switch语句
+
+   3. foreach     ：相当于java代码的for语句
+
+      
+```
+<c:if test="条件表达式">
+	do...
+</c:if>
+```
+
+```
+<c:choose>
+    <c:when test="条件表达式">do...</c:when>
+    <c:when test="条件表达式">do...</c:when>--
+    <c:otherwise>do...</c:otherwise>
+</c:choose>
+```
+
+（fmt的使用）
+
+```
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+*****for(T n:news){}
+<c:forEach items="${news}" var="n">
+    <tr>
+        <td>${n.id}</td>
+        <td>${n.tname}</td>
+        <td>${n.summary}</td>
+        <td>${n.ncontent}</td>
+        <td><fmt:formatDate value="${n.createtime}" pattern="yyyy-MM-dd hh:mm:ss"></fmt:formatDate> </td>
+        <td>
+            <a href="tnews?op=findByid&id=${n.id}">修改</a>
+        </td>
+    </tr>
+
+</c:forEach>
+```
+
+```
+***fori语句***for(int i=1;i<=10;i=i+2)
+<c:forEach begin="1" end="10" var="i" step="2">
+    ${i}<br>
+</c:forEach>
+
+1
+3
+5
+7
+9
+```
+
+循环中varstatus使用
+
+```
+<c:forEach begin="1" end="10" var="i" step="2" varStatus="s">
+    ${i}---${s.index}---${s.count}<br>
+</c:forEach>
+
+
+1---1---1
+3---3---2
+5---5---3
+7---7---4
+9---9---5
+```
+
+
+
+遍历容器
+
+```
+<%
+    List list=new ArrayList();
+    list.add("aaa");
+    list.add("bbb");
+    list.add("ccc");
+    request.setAttribute("list",list);
+%>
+<c:forEach items="${list}" var="str" varStatus="s">
+    ${s.index}---${s.count}---${str}<br>
+</c:forEach>
+
+0---1---aaa
+1---2---bbb
+2---3---ccc
+```
+
+
+
+# 过滤器
+
+拦截配置：
+
+/index.jsp拦截指定资源
+
+/*.jsp拦截指定路径的指定后缀的资源
+
+/*拦截指定路径的所有资源
+
+注解设置dispatcherTypes属性
+1.REQUEST:默认值。浏览器直接请求资源
+2.FORWARD∶转发访问资源
+3.INCLUDE:包含访问资源
+4.ERROR∶错误跳转资源
+5.ASYNC:异步访问资源
+
+
+
+//只有转发访可index.jsp时，该过滤器才会被执行
+@WebFilter(value="/index.jsp",dispatcherTypes = DispatcherType.FORWARD)
+
+配置多个，请求与转发都能拦截
+
+@WebFilter(value="/index.jsp",dispatcherTypes ={DispatcherType.FORWARD,DispatcherType.REQUEST,...} )
+
+
+
+```java
+@WebFilter("/*")
+public class filter2 implements Filter {
+    public void destroy() {
+        System.out.println("过滤器的销毁");//tomcat销毁时执行一次
+    }
+
+    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {//每次触发都会执行
+        System.out.println("过滤前：");
+        chain.doFilter(req, resp);//放行
+        System.out.println("过滤后");
+    }
+
+    public void init(FilterConfig config) throws ServletException {
+        System.out.println("过滤器的创建");//tomcat初始化时执行一次
+    }
+
+}
+```
+
+## 拦截顺须
+
+```
+filterDemo6执行了...
+filterDemo7执行了...
+index.jsp..--
+filterDemo7回来了..
+filterDemo6回来了...
+```
+
+过滤器先后顺序问题∶
+1．注解配置:按照类名的字符串比较规则比较，值小的先执行
+
+	* 如:AFilter和BFilter，AFilter就先执行了。
+
+2. web.xml配置: \<filter-mapping\>谁定义在上边，谁先执行
+
+# 监听器
+
+按照被监听的对象划分：ServletRequest域 ；HttpSession域 ；ServletContext域。按照监听的内容分：监听域对象的创建与销毁的； 监听域对象的属性变化的。
+
+![img](https://images2017.cnblogs.com/blog/612774/201707/612774-20170727224225821-912555968.png)
+
+## ServletContext域监听器
+
+ServletContextListener（范围最大的，时间最持久的）
+
+```
+public class AppListen implements ServletContextListener {
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {//销毁
+    }
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {//创建
+    }
+}
+```
+
+ServletContextAttributeListener属性监听器
+
+```
+public class AppListen implements ServletContextAttributeListener {
+    @Override
+    public void attributeAdded(ServletContextAttributeEvent scae) {
+        
+    }
+
+    @Override
+    public void attributeRemoved(ServletContextAttributeEvent scae) {
+
+    }
+
+    @Override
+    public void attributeReplaced(ServletContextAttributeEvent scae) {
+
+    }
+}
+```
+
+
+
+## HttpSession域监听器
+
+HttpSessionListener（范围覆盖一个用户，时间持续一个指定的周期）
+
+```java
+public class SessionListen implements HttpSessionListener {
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+    }
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+        //取到该session 中的用户
+        HttpSession session = se.getSession();
+        ServletContext app = session.getServletContext();
+        Set<User> users = (Set<User>)app.getAttribute("onlineusers");
+        User user = (User)session.getAttribute("loginuser");
+        users.remove(user);
+    }
+}
+```
+
+HttpSessionAttributeListener属性监听器
+
+```
+public class AttriListen implements HttpSessionAttributeListener {
+    @Override
+    public void attributeAdded(HttpSessionBindingEvent se) {
+    }
+
+    @Override
+    public void attributeRemoved(HttpSessionBindingEvent se) {
+
+    }
+
+    @Override
+    public void attributeReplaced(HttpSessionBindingEvent se) {
+
+    }
+}
+```
+
+
+
+## ServletRequest监听器
+
+ServletRequestListener（时间最短，时间持续一个调用周期）
+
+```java
+public class request implements ServletRequestListener {
+    @Override
+    public void requestDestroyed(ServletRequestEvent sre) {
+        
+    }
+
+    @Override
+    public void requestInitialized(ServletRequestEvent sre) {
+
+    }
+}
+```
+
+ServletRequestAttributeListener属性监听器
+
+```
+public class request implements ServletRequestAttributeListener {
+    @Override
+    public void attributeAdded(ServletRequestAttributeEvent srae) {
+        
+    }
+
+    @Override
+    public void attributeRemoved(ServletRequestAttributeEvent srae) {
+
+    }
+
+    @Override
+    public void attributeReplaced(ServletRequestAttributeEvent srae) {
+
+    }
+}
+```
+
+## 全家桶版
+
+```
+public class Applistener implements ServletContextListener, ServletContextAttributeListener,
+        HttpSessionListener, HttpSessionAttributeListener,
+        ServletRequestListener, ServletRequestAttributeListener {
+    @Override
+    public void attributeAdded(ServletContextAttributeEvent scae) {
+
+    }
+
+    @Override
+    public void attributeRemoved(ServletContextAttributeEvent scae) {
+
+    }
+
+    @Override
+    public void attributeReplaced(ServletContextAttributeEvent scae) {
+
+    }
+
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+
+    }
+
+    @Override
+    public void attributeAdded(ServletRequestAttributeEvent srae) {
+
+    }
+
+    @Override
+    public void attributeRemoved(ServletRequestAttributeEvent srae) {
+
+    }
+
+    @Override
+    public void attributeReplaced(ServletRequestAttributeEvent srae) {
+
+    }
+
+    @Override
+    public void requestDestroyed(ServletRequestEvent sre) {
+
+    }
+
+    @Override
+    public void requestInitialized(ServletRequestEvent sre) {
+
+    }
+
+    @Override
+    public void attributeAdded(HttpSessionBindingEvent se) {
+
+    }
+
+    @Override
+    public void attributeRemoved(HttpSessionBindingEvent se) {
+
+    }
+
+    @Override
+    public void attributeReplaced(HttpSessionBindingEvent se) {
+
+    }
+
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+
+    }
+
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+
+    }
+}
+```
+
+
+
+# 代理
+
+
+
+
+
+
+
+## 案例
+
+接口
+
+```java
+public interface Intf {
+    String giao(int msg);
+    void show();
+}
+```
+
+实现
+
+```java
+public class Impl implements Intf {
+    @Override
+    public String giao(int msg) {
+        System.out.println("giao "+msg);
+        return "info+"+msg;
+    }
+
+    @Override
+    public void show() {
+        System.out.println("giao");
+    }
+}
+```
+
+测试
+
+```java
+public class test1 {
+    public static void main(String[] args) {
+        Intf intf = new Impl();
+        Intf o = (Intf)Proxy.newProxyInstance(intf.getClass().getClassLoader(), intf.getClass().getInterfaces(), new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                System.out.println("i watch u");
+                Object o1 = method.invoke(intf, args);
+                return o1;
+            }
+        });
+        //o.show();
+        String giao = o.giao(200);
+        System.out.println(giao);
+    }
+}
+out：
+    i watch u
+    giao 200
+    info+200
+```
+
+invoke的函数增强，通过method获取函数名，然后进行增强
+
+```java
+Intf o = (Intf)Proxy.newProxyInstance(intf.getClass().getClassLoader(), intf.getClass().getInterfaces(), new InvocationHandler() {
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (method.getName().equals("giao")){
+            Object o1 = method.invoke(intf, args);
+            return o1+"-----------";
+        }else{
+            Object o1 = method.invoke(intf, args);
+            return o1;
+        }
+
+    }
+});
+out：
+    giao 200
+	info+200-----------
+```
+
+
+
+# Json
+
+jsonback-1.2.2.jar
+
+## 响应设置
+
+```java
+resp.setCharacterEncoding("utf-8");
+resp.setContentType("application/json;charset=utf-8");
+```
+
+## json对象
+
+```
+JSONObject jsonback = new JSONObject();
+jsonback.put("key",jsonArray);
+jsonback.put("key",jsonObject);
+jsonback.put("key",String、Integer、Date..);
+
+resp.getWriter().write(jsonback.toString());
+```
+
+
+
+## json数组
+
+```
+JSONArray jsonArray = new JSONArray();                  		  //data:[
+for(Map<String,Object> map : nameLists){  List<Map<String,Object>>//        单个room json对象，共150条
+    Iterator<String> iterator = map.keySet().iterator();		  //      ]
+    JSONObject jo = new JSONObject();
+    while (iterator.hasNext()){
+        String key=iterator.next();
+        //System.out.println(key+ map.get(key));
+        jo.put(key, map.get(key));
+    }
+    jsonArray.add(jo);
+}    
+```
+
+
+
+## 案例  
+
+List<Map<String,Object>>   -->   json
+
+```java
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+JSONArray jsonArray = new JSONArray();                  //data:[
+for(Map<String,Object> map : nameLists){                //        单个room json对象，共150条
+    Iterator<String> iterator = map.keySet().iterator();//      ]
+    JSONObject jo = new JSONObject();
+    while (iterator.hasNext()){
+        String key=iterator.next();
+        //System.out.println(key+ map.get(key));
+        jo.put(key, map.get(key));
+    }
+    jsonArray.add(jo);
+}
+JSONObject jsonback = new JSONObject();
+jsonback.put("data",jsonArray);
+resp.getWriter().write(jsonback.toString());
+```
+
+实体类对象   -->   json
+
+```java
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+Registertab man = reg.showRegistertab(Integer.parseInt(roomNumber));
+ObjectMapper om = new ObjectMapper();
+om.writeValue(resp.getOutputStream(),man);
 ```
 
